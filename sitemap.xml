@@ -20,15 +20,6 @@
   </url>
   
   <url>
-    <loc>http://delick.github.io/sitemap/index.html</loc>
-    
-    <lastmod>2024-01-14</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://delick.github.io/2024/01/14/sitemap/index/</loc>
     
     <lastmod>2024-01-14</lastmod>
@@ -129,14 +120,14 @@
   </url>
   
   <url>
-    <loc>http://delick.github.io/tags/GSI/</loc>
+    <loc>http://delick.github.io/tags/WRFDA/</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://delick.github.io/tags/WRFDA/</loc>
+    <loc>http://delick.github.io/tags/GSI/</loc>
     <lastmod>2024-01-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
