@@ -443,7 +443,6 @@ mjx-container[display="true"] + br {
     </span>
 </div>
 
-            <div class="post-description">介绍三维变分同化中卫星观测算子的数学模型</div>
         </div>
       </header>
 
@@ -451,17 +450,10 @@ mjx-container[display="true"] + br {
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="三维变分同化">三维变分同化</h1>
-<p>三维变分的基本公式为：</p>
-<p><span class="math display">\[\begin{equation}
-J=\frac{1}{2}\left(x_a-x_b\right)^T
-B^{-1}\left(x_a-x_b\right)+\frac{1}{2}\left(H x_a-o_o\right)^T
-O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
-\end{equation}
-\]</span></p>
+          <p>介绍三维变分同化中卫星观测算子的数学模型</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/01/13/assim/3dvar/maths/#more" rel="contents">
+              <a class="btn" href="/2024/01/13/assim/3dvar/maths/">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -562,7 +554,6 @@ O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
     </span>
 </div>
 
-            <div class="post-description">介绍WRFDA同化框架有关卫星资料的部分</div>
         </div>
       </header>
 
@@ -570,12 +561,10 @@ O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="wrfda同化入口">WRFDA同化入口</h1>
-<h2 id="主入口">主入口</h2>
-<p><code>da_solve.inc</code></p>
+          <p>介绍WRFDA同化框架有关卫星资料的部分</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/01/13/assim/wrfda/interface/#more" rel="contents">
+              <a class="btn" href="/2024/01/13/assim/wrfda/interface/">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -676,7 +665,6 @@ O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
     </span>
 </div>
 
-            <div class="post-description">介绍 RTTOV 流程和接口调用关系，以及部分数据结构</div>
         </div>
       </header>
 
@@ -684,57 +672,10 @@ O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="rttov-接口数据类型">RTTOV 接口数据类型</h1>
-<h2 id="接口调用流程">接口调用流程</h2>
-<pre><code class="highlight mermaid">flowchart LR
-linkStyle default interpolate basis
-
-subgraph setup[&lt;b&gt;&lt;l&gt;同化外循环]
-direction LR
-	setuprhsall --&gt; setuprad 
-	setuprad --&gt; crtm_intf
-	setuprad --&gt; rttov_intf
-  subgraph crtm_intf[&lt;b&gt;CRTM 接口]
-    init_crtm
-    call_crtm
-    destroy_crtm
-  end
-  subgraph rttov_intf[&lt;b&gt;RTTOV 接口]
-    init_rttov --&gt; call_rttov
-    call_rttov --&gt; rttov_spec --&gt; destroy_rttov
-    subgraph rttov_spec[&lt;b&gt;RTTOV流程]
-    direction LR
-      rt_opts[RTTO选项设置] --&gt; rt_coef
-      rt_coef[读取系数文件] --&gt; rt_prof
-      rt_prof[填充大气廓线] --&gt; rt_emis
-      rt_emis[指定地表发射率] --&gt; rt_direct
-      rt_direct[调用正向模式] --&gt; rt_k
-      rt_k[调用K模式]
-    end
-    destroy_rttov
-  end
-end
-
-
-classDef blue_item fill:#e7f0fd,stroke:#4285F4,stroke-width:2px,color:#2f2f2f;
-classDef blue_group fill:#E3EDFD,stroke:#4285F4,stroke-width:2px,color:#4285F4;
-classDef gray_group fill:#f2f2f2,stroke:#2f2f2f,stroke-width:2px,color:#2f2f2f;
-classDef gray_item fill:#ffffff,stroke:#2f2f2f,stroke-width:2px,color:#2f2f2f;
-classDef red_group fill:#f7d7d4,stroke:#DB4437,stroke-width:2px,color:#2f2f2f;
-classDef red_item fill:#f7d7d4,stroke:#DB4437,stroke-width:2px,color:#DB4437;
-classDef red_item_ingroup fill:#ffffff,stroke:#DB4437,stroke-width:2px,color:#DB4437;
-classDef blue_item_ingroup fill:#ffffff,stroke:#4285F4,stroke-width:2px,color:#4285F4;
-class rttov_intf blue_group
-class crtm_intf,rtm_intf gray_group
-class setup gray_item
-class setuprhsall,setuprad gray_item
-class rttov_spec red_group
-class rt_opts,rt_coef,rt_prof,rt_emis,rt_direct,rt_k red_item_ingroup
-class init_crtm,call_crtm,destroy_crtm gray_item
-class init_rttov,call_rttov,destroy_rttov blue_item_ingroup</code></pre>
+          <p>介绍 RTTOV 流程和接口调用关系，以及部分数据结构</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/01/13/assim/rttov/interface/#more" rel="contents">
+              <a class="btn" href="/2024/01/13/assim/rttov/interface/">
                 阅读全文 &raquo;
               </a>
             </div>
