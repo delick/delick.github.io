@@ -1,7 +1,7 @@
+http://delick.github.io/2024/01/13/assim/wrfda/interface/
+http://delick.github.io/2024/01/13/assim/rttov/interface/
 http://delick.github.io/sitemap/index.html
 http://delick.github.io/2024/01/14/sitemap/index/
-http://delick.github.io/2024/01/13/assim/rttov/interface/
-http://delick.github.io/2024/01/13/assim/wrfda/interface/
 http://delick.github.io/2024/01/13/assim/3dvar/maths/
 http://delick.github.io/schedule/index.html
 http://delick.github.io/about/index.html
@@ -13,6 +13,7 @@ http://delick.github.io/tags/RTTOV/
 http://delick.github.io/tags/CRTM/
 http://delick.github.io/tags/satellite/
 http://delick.github.io/tags/data-assimilation/
+http://delick.github.io/tags/GSI/
 http://delick.github.io/tags/WRFDA/
 http://delick.github.io/categories/data-assimilation/
 http://delick.github.io/categories/data-assimilation/satellite/

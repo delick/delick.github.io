@@ -269,6 +269,7 @@ class rt_opts,rt_coef,rt_prof,rt_emis,rt_direct,rt_k red_item_ingroup
 class init_crtm,call_crtm,destroy_crtm gray_item
 class init_rttov,call_rttov,destroy_rttov blue_item_ingroup</code></pre>
 <span id="more"></span>
+<h2 id="gsi-中辐射传输模式接口">GSI 中辐射传输模式接口</h2>
 <pre><code class="highlight mermaid">flowchart LR
 linkStyle default interpolate basis
 
@@ -307,6 +308,7 @@ class K gray_group
 class O,Sens2 gray_item
 class val,rval gray_item
 class Tsim,TBC,Sens1,tval blue_item</code></pre>
+<h2 id="rttov-手册中的调用流程">RTTOV 手册中的调用流程</h2>
 <ol type="1">
 <li><p>设置 RTTOV 选项（<code>rttov_options</code>）</p>
 <p>读系数前一定先选择模拟类型的最大范围，不然可能会分配内存出错。</p>
@@ -503,82 +505,6 @@ PC-RTTOV 模拟。</li>
 <code>rttov_parallel_direct</code>、<code>rttov_parallel_tl</code>等等。选项中多了一个
 <code>nthreads</code> 指定并行进程数。</p></li>
 </ol>
-<h2 id="手册中的流程">手册中的流程</h2>
-<p><strong>7.12. Summary of steps for running RTTOV v12</strong></p>
-<p>You need to ensure the following in your program which calls
-RTTOV:</p>
-<p>· Create an instance of the
-<strong><code>rttov_options</code></strong> type and set any of the
-member flags as required. The full list of options is given in Annex
-O.</p>
-<p>· Optional: you may wish to call
-<strong><code>rttov_errorhandling</code></strong> to specify the logical
-unit to use for error messages.</p>
-<p>· An instance of the <strong><code>rttov_coefs</code></strong> type
-should be populated by calling
-<strong><code>rttov_read_coefs</code></strong>.</p>
-<p>· Optional: you may wish to call
-<strong><code>rttov_user_options_checkinput</code></strong> to ensure
-the selected options are consistent with the coefficient file.</p>
-<p>· Allocate the input/output structures to RTTOV with the number of
-channels and profiles you want to run with (e.g. by calling
-<strong><code>rttov_alloc_direct/tl/ad/k</code></strong>, see Annex D).
-If the emissivity and/or BRDF atlases are required these should be
-initialised now (see Annexes F and G). See
-<strong><code>src/test/example_*.F90</code></strong> for example code
-detailing the input variables required for RTTOV.</p>
-<p>· Initialise the profile structure with your atmospheric profile.
-This is shown in Table 12 and listed in Annex O.</p>
-<p>· Optional: you may wish to check the input profiles for unphysical
-or out-of-specification values before calling RTTOV. This can be
-achieved using the
-<strong><code>rttov_user_profile_checkinput</code></strong> subroutine
-(Annex N). If this is used,
-<strong><code>opts%config%do_checkinput</code></strong> can be set to
-false. You may also find the
-<strong><code>rttov_print_profile</code></strong> subroutine (Annex N)
-useful for debugging purposes: this prints out the contents of a single
-profile structure.</p>
-<p>· Initialise the <strong><code>chanprof</code></strong> array with
-the channel and profile indexes as described in section 6.4.</p>
-<p>· You may give a surface emissivity value in
-<strong><code>emissivity(:)%emis_in</code></strong> for each radiance
-calculation (for example from one of the land surface emissivity
-atlases), in which case you must set
-<strong><code>calcemis(j)</code></strong> to false for the desired
-channels. Alternatively you may let the code compute it by the use of
-the internal emissivity models by setting the appropriate
-<strong><code>calcemis(j)</code></strong> to true.</p>
-<p>· For solar calculations you may supply a surface BRDF value in
-<strong><code>reflectance(:)%refl_in</code></strong> for each radiance
-calculation (for example from the land surface BRDF atlas), in which
-case you must set <strong><code>calcrefl(j)</code></strong> to false for
-the desired channels. This is recommended for land surfaces.
-Alternatively you may let RTTOV compute/select BRDF values internally by
-setting the appropriate <strong><code>calcrefl(j)</code></strong> to
-true.</p>
-<p>· Call RTTOV (<strong><code>rttov_direct</code></strong>) with the
-input/output variables and with the coefficient structure corresponding
-to the instrument you want to simulate.</p>
-<p>· When all RTTOV calls are made, then you should free memory by
-de-allocating the various input and output structures with the
-<strong><code>rttov_dealloc_coef</code></strong> ,
-<strong><code>rttov_alloc_direct/tl/ad/k</code></strong> (see Annexes C
-and D). If the emissivity and or BRDF atlases were initialised, they
-should also be de-allocated now (see Annexes F and G).</p>
-<p>· Most user-level RTTOV subroutines return an error status. This
-variable should be tested after each call: non-zero values indicate that
-an error occurred.</p>
-<p>· If you want to run the cloud or aerosol options for visible/ IR
-sensors follow the guidance in sections 8.5/8.6.</p>
-<p>· For microwave scattering calculations, the
-<strong><code>rttov_scatt</code></strong> routines are a level up from
-<strong><code>rttov_direct</code></strong> but they have a similar
-calling structure and arrays to fill (see section 8.7 and Annex M). The
-example program supplied
-<strong><code>example_rttovscatt.F90</code></strong> can be used as an
-example and similar rules apply to calling
-<strong><code>rttov_direct</code></strong>.</p>
 <h2 id="数据结构总表">数据结构总表</h2>
 <table>
 <colgroup>
@@ -668,7 +594,7 @@ scheme.</td>
 </tbody>
 </table>
 <p>加粗字体为需要使用的数据结构体。</p>
-<h2 id="rttov_direct">RTTOV_direct</h2>
+<h3 id="rttov_direct-结构体"><code>RTTOV_direct</code> 结构体</h3>
 <table>
 <colgroup>
 <col style="width: 32%">
@@ -770,7 +696,7 @@ scheme.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="rttov_tl"><code>RTTOV_tl</code></h2>
+<h3 id="rttov_tl-结构体"><code>RTTOV_tl</code> 结构体</h3>
 <table>
 <colgroup>
 <col style="width: 17%">
@@ -938,7 +864,7 @@ true.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="rttov_ad"><code>RTTOV_ad</code></h2>
+<h3 id="rttov_ad-结构体"><code>RTTOV_ad</code> 结构体</h3>
 <table>
 <colgroup>
 <col style="width: 17%">
@@ -1212,10 +1138,12 @@ limits</td>
 ]]></content>
       <categories>
         <category>data assimilation</category>
+        <category>satellite</category>
       </categories>
       <tags>
         <tag>RTTOV</tag>
         <tag>data assimilation</tag>
+        <tag>GSI</tag>
       </tags>
   </entry>
   <entry>
