@@ -29,189 +29,6 @@ href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
   </entry>
   <entry>
-    <title>卫星观测算子背后的数学模型</title>
-    <url>/2024/01/13/assim/3dvar/maths/</url>
-    <content><![CDATA[<h1 id="三维变分同化">三维变分同化</h1>
-<p>三维变分的基本公式为：</p>
-<p><span class="math display">\[\begin{equation}
-J=\frac{1}{2}\left(x_a-x_b\right)^T
-B^{-1}\left(x_a-x_b\right)+\frac{1}{2}\left(H x_a-o_o\right)^T
-O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
-\end{equation}
-\]</span></p>
-<span id="more"></span>
-<p>其中，</p>
-<ul>
-<li><span class="math inline">\(x_a\)</span> 分析场</li>
-<li><span class="math inline">\(x_b\)</span> 背景场</li>
-<li><span class="math inline">\(B\)</span> 背景场误差协方差矩阵</li>
-<li><span class="math inline">\(H\)</span> 观测算子</li>
-<li><span class="math inline">\(O_o\)</span> 观测</li>
-<li><span class="math inline">\(O\)</span> 观测误差协方差</li>
-<li><span class="math inline">\(J_c\)</span>
-约束项（如：动态约束、水分约束）</li>
-</ul>
-<p>定义分析场增量 <span class="math inline">\((\Delta \mathrm{x}=)
-x=x_a-x_b\)</span>，则公式 <span
-class="math inline">\(\eqref{eq1}\)</span> 变为：</p>
-<p><span class="math display">\[\begin{equation}
-J=\frac{1}{2} x^T B^{-1}
-x+\frac{1}{2}\left(H\left(x_b+x\right)-o_o\right)^T
-O^{-1}\left(H\left(x_b+x\right)-o_o\right)+J_c \label{eq:2}
-\end{equation}
-\]</span></p>
-<p>假设观测算子为线性的，公式 <span
-class="math inline">\(\ref{eq:2}\)</span> 变为： <span
-class="math display">\[\begin{equation}
-J=\frac{1}{2} x^T B^{-1} x+\frac{1}{2}\left(H x-\left(o_o-H
-x_b\right)\right)^T O^{-1}\left(H x-\left(o_o-H x_b\right)\right)+J_c
-\label{eq:3}
-\end{equation}
-\]</span> 进一步，定义观测增量（innovation）为 <span
-class="math inline">\(o=o_o-H x_b\)</span>，公式 <span
-class="math inline">\(\ref{eq:3}\)</span> 变为： <span
-class="math display">\[
-\begin{equation}
-J=\frac{1}{2} x^T B^{-1} x+\frac{1}{2}(H x-o)^T O^{-1}(H x-o)+J_c
-\label{eq:4}
-\end{equation}
-\]</span> 为了促进收敛，GSI 预处理了代价函数，定义了一个新变量 <span
-class="math inline">\(y=B^{-1} x\)</span>，因此公式 <span
-class="math inline">\(\ref{eq:4}\)</span> 相对于新变量 <span
-class="math inline">\(y\)</span> 可写成： <span class="math display">\[
-\begin{equation}
-J=\frac{1}{2} y^T B y+\frac{1}{2}(H B y-o)^T O^{-1}(H B y-o)+J_c
-\label{eq:5}
-\end{equation}
-\]</span> 根据链式法则，代价函数（公式<span
-class="math inline">\(\ref{eq:4}\)</span>）的背景场和观测场部分的相对于
-<span class="math inline">\(x\)</span> 梯度，以及代价函数（公式 <span
-class="math inline">\(\ref{eq:5}\)</span>）相对于 <span
-class="math inline">\(y\)</span> 可写成：</p>
-<p><span class="math display">\[
-\begin{eqnarray}
-&amp;\nabla_x J=B^{-1} x+H^T O^{-1}(H x-o) \label{eq:6}\\
-&amp;\nabla_y J=B^T y+B^T H^T O^{-1}(H B y-o)=B \nabla_x J \label{eq:7}
-\end{eqnarray}
-\]</span></p>
-<p>公式 <span class="math inline">\(\ref{eq:6}\)</span> 和 <span
-class="math inline">\(\ref{eq:7}\)</span>
-可同时优化，使用共轭梯度（Conjugate Gradiant）法。一开始假设：</p>
-<p><span class="math display">\[\begin{equation}
-x^0=y^0=0 \label{eq:8}
-\end{equation}
-\]</span></p>
-<p>接着对 <span class="math inline">\(n\)</span> 迭代：</p>
-<p><span class="math display">\[
-\begin{eqnarray}
-&amp;\nabla_x J^n=B^{-1} x^{n-1}+H^T O^{-1}\left(H
-x^{n-1}-o\right)=y^{n-1}+H^T O^{-1}\left(H x^{n-1}-o\right)
-\label{eq:9}\\
-&amp;\nabla_y J^n=B \nabla_x J^n \label{eq:10}
-\end{eqnarray}
-\]</span></p>
-<p>其中搜索步长为：</p>
-<p><span class="math display">\[
-\begin{equation} \label{eq:11}
-\begin{aligned}
-&amp;\operatorname{Dir} \cdot x^n=\nabla_y J^n+\beta \operatorname{Dir}
-\cdot x^{n-1} \\
-&amp;\operatorname{Dir} \cdot y^n=\nabla_x J^n+\beta \operatorname{Dir}
-\cdot y^{n-1} \\
-\end{aligned}
-\end{equation}
-\]</span></p>
-<p>迭代后的结果为： <span class="math display">\[\begin{equation}
-\label{eq:12}
-\begin{aligned}
-&amp;x^n=x^{n-1}+\alpha \operatorname{Dir} \cdot x^n \\
-&amp;y^n=y^{n-1}+\alpha \operatorname{Dir} \cdot y^n
-\end{aligned}
-\end{equation}
-\]</span> 直到达到最大迭代次数，或梯度足够小为止。</p>
-<h1 id="辐射传输子模式的关系">辐射传输子模式的关系</h1>
-<h2 id="正向模式">正向模式</h2>
-<p>对于给定大气状态参量（state vector）<span
-class="math inline">\(\mathbf{x}\)</span>，辐射向量 <span
-class="math inline">\(\mathbf{y}\)</span> 的计算公式为：</p>
-<p><span class="math display">\[
-\begin{equation}
-\mathbf{y} = H (\mathbf{x}) \label{eq:13}
-\end{equation}
-\]</span></p>
-<p>其中，<span class="math inline">\(H\)</span>
-为辐射传输模式（观测算子，即正向模式）。Jacobian 矩阵 <span
-class="math inline">\(\mathbf{H}\)</span> 给出了假设在大气状态 <span
-class="math inline">\(\mathbf{x_0}\)</span>
-处的线性关系条件下，辐射随状态参量增量（<span
-class="math inline">\(\mathbf{\delta x}\)</span>）的变化 <span
-class="math inline">\(\mathbf{\delta y}\)</span>：</p>
-<p><span class="math display">\[\begin{equation}
-\mathbf{\delta y = H(x_0) \delta x} \label{eq:14}
-\end{equation}
-\]</span></p>
-<p><span class="math inline">\(\mathbf{H}\)</span>
-即为偏微分（Jacobian）矩阵，<span class="math inline">\(\partial y_i /
-\partial x_j\)</span> 为通道 <span class="math inline">\(i\)</span>
-在状态参量 <span class="math inline">\(j\)</span> 处的偏导。Jacobian
-矩阵存储了大气顶层（TOA）辐射随<strong>各高度层廓线向量的单位扰动</strong>
-以及 <strong>地表/云参数</strong>
-的变化。显然，对于给定的大气廓线，它能说明每个通道对哪个高度层的温度和可变气体浓度变化最敏感</p>
-<h2 id="k-矩阵">K 矩阵</h2>
-<p>公式 <span class="math inline">\(\ref{eq:14}\)</span> 中，<span
-class="math inline">\(\mathbf{H(x_0)}\)</span> 即为 RTTOV 中的 <strong>K
-矩阵</strong>。<code>rttov_k</code>及其带
-<code>_K</code>后缀的子进程计算了每条廓线对应的 <span
-class="math inline">\(\mathbf{H(x_0)}\)</span> 矩阵。</p>
-<h2 id="切线性tl">切线性（TL）</h2>
-<p>存储完整的 Jacobian 矩阵<span
-class="math inline">\(\mathbf{H}\)</span>不总是必要的，因此，RTTOV
-包可以只输出<strong>切线性（tangent linear，TL）值</strong> <span
-class="math inline">\(\mathbf{\delta y}\)</span>，在初始大气状态 <span
-class="math inline">\(x_0\)</span> 处，给定大气廓线变化 <span
-class="math inline">\(\mathbf{\delta x}\)</span>，对应的各通道 TOA
-辐射变化 <span class="math inline">\(y_n\)</span> ：</p>
-<p><span class="math display">\[
-\begin{equation}\label{eq:15}
-\begin{aligned}
-&amp;\delta y (x_0) &amp;=&amp; \left[ \delta x \frac{\partial
-y_1}{\partial x}, \delta x \frac{\partial y_2}{\partial x}, \delta x
-\frac{\partial y_3}{\partial x}, \cdots, \delta x \frac{\partial
-y_{nchan}}{\partial x} \right] \\
-&amp; &amp; =&amp; \left[ \delta x K_1, \delta x K_2, \delta x K_3,
-\cdots, \delta x K_{nchan} \right]
-\end{aligned}
-\end{equation}
-\]</span></p>
-<h2 id="伴随ad">伴随（AD）</h2>
-<p><strong>切线性</strong>子进程都有 <code>_TL</code>
-后缀。对应的，伴随函数（以<code>_AD</code>结尾）计算了对于给定辐射变化<span
-class="math inline">\(\delta y\)</span>，假定大气状态 <span
-class="math inline">\(\mathbf{x_0}\)</span> 中任意变量（最多 <span
-class="math inline">\(nel\)</span> 个元素）随大气状态参量（T, q,
-臭氧，地表变量等）的变化： <span class="math display">\[
-\begin{equation}
-\begin{aligned}
-\delta x (x_0) &amp;=&amp; \left[ \delta y \frac{\partial x_1}{\partial
-y}, \delta y \frac{\partial x_2}{\partial y}, \delta y \frac{\partial
-x_3}{\partial y}, \cdots, \delta y \frac{\partial x_{nel}}{\partial y}
-\right]
-\end{aligned}
-\end{equation}
-\]</span></p>
-]]></content>
-      <categories>
-        <category>data assimilation</category>
-        <category>satellite</category>
-      </categories>
-      <tags>
-        <tag>RTTOV</tag>
-        <tag>CRTM</tag>
-        <tag>satellite</tag>
-        <tag>data assimilation</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>RTTOV interface &amp; data types</title>
     <url>/2024/01/13/assim/rttov/interface/</url>
     <content><![CDATA[<h1 id="rttov-接口数据类型">RTTOV 接口数据类型</h1>
@@ -1213,6 +1030,189 @@ limits</td>
       </tags>
   </entry>
   <entry>
+    <title>卫星观测算子背后的数学模型</title>
+    <url>/2024/01/13/assim/3dvar/maths/</url>
+    <content><![CDATA[<h1 id="三维变分同化">三维变分同化</h1>
+<p>三维变分的基本公式为：</p>
+<p><span class="math display">\[\begin{equation}
+J=\frac{1}{2}\left(x_a-x_b\right)^T
+B^{-1}\left(x_a-x_b\right)+\frac{1}{2}\left(H x_a-o_o\right)^T
+O^{-1}\left(H x_a-o_o\right)+J_c \label{eq1}
+\end{equation}
+\]</span></p>
+<span id="more"></span>
+<p>其中，</p>
+<ul>
+<li><span class="math inline">\(x_a\)</span> 分析场</li>
+<li><span class="math inline">\(x_b\)</span> 背景场</li>
+<li><span class="math inline">\(B\)</span> 背景场误差协方差矩阵</li>
+<li><span class="math inline">\(H\)</span> 观测算子</li>
+<li><span class="math inline">\(O_o\)</span> 观测</li>
+<li><span class="math inline">\(O\)</span> 观测误差协方差</li>
+<li><span class="math inline">\(J_c\)</span>
+约束项（如：动态约束、水分约束）</li>
+</ul>
+<p>定义分析场增量 <span class="math inline">\((\Delta \mathrm{x}=)
+x=x_a-x_b\)</span>，则公式 <span
+class="math inline">\(\eqref{eq1}\)</span> 变为：</p>
+<p><span class="math display">\[\begin{equation}
+J=\frac{1}{2} x^T B^{-1}
+x+\frac{1}{2}\left(H\left(x_b+x\right)-o_o\right)^T
+O^{-1}\left(H\left(x_b+x\right)-o_o\right)+J_c \label{eq:2}
+\end{equation}
+\]</span></p>
+<p>假设观测算子为线性的，公式 <span
+class="math inline">\(\ref{eq:2}\)</span> 变为： <span
+class="math display">\[\begin{equation}
+J=\frac{1}{2} x^T B^{-1} x+\frac{1}{2}\left(H x-\left(o_o-H
+x_b\right)\right)^T O^{-1}\left(H x-\left(o_o-H x_b\right)\right)+J_c
+\label{eq:3}
+\end{equation}
+\]</span> 进一步，定义观测增量（innovation）为 <span
+class="math inline">\(o=o_o-H x_b\)</span>，公式 <span
+class="math inline">\(\ref{eq:3}\)</span> 变为： <span
+class="math display">\[
+\begin{equation}
+J=\frac{1}{2} x^T B^{-1} x+\frac{1}{2}(H x-o)^T O^{-1}(H x-o)+J_c
+\label{eq:4}
+\end{equation}
+\]</span> 为了促进收敛，GSI 预处理了代价函数，定义了一个新变量 <span
+class="math inline">\(y=B^{-1} x\)</span>，因此公式 <span
+class="math inline">\(\ref{eq:4}\)</span> 相对于新变量 <span
+class="math inline">\(y\)</span> 可写成： <span class="math display">\[
+\begin{equation}
+J=\frac{1}{2} y^T B y+\frac{1}{2}(H B y-o)^T O^{-1}(H B y-o)+J_c
+\label{eq:5}
+\end{equation}
+\]</span> 根据链式法则，代价函数（公式<span
+class="math inline">\(\ref{eq:4}\)</span>）的背景场和观测场部分的相对于
+<span class="math inline">\(x\)</span> 梯度，以及代价函数（公式 <span
+class="math inline">\(\ref{eq:5}\)</span>）相对于 <span
+class="math inline">\(y\)</span> 可写成：</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+&amp;\nabla_x J=B^{-1} x+H^T O^{-1}(H x-o) \label{eq:6}\\
+&amp;\nabla_y J=B^T y+B^T H^T O^{-1}(H B y-o)=B \nabla_x J \label{eq:7}
+\end{eqnarray}
+\]</span></p>
+<p>公式 <span class="math inline">\(\ref{eq:6}\)</span> 和 <span
+class="math inline">\(\ref{eq:7}\)</span>
+可同时优化，使用共轭梯度（Conjugate Gradiant）法。一开始假设：</p>
+<p><span class="math display">\[\begin{equation}
+x^0=y^0=0 \label{eq:8}
+\end{equation}
+\]</span></p>
+<p>接着对 <span class="math inline">\(n\)</span> 迭代：</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+&amp;\nabla_x J^n=B^{-1} x^{n-1}+H^T O^{-1}\left(H
+x^{n-1}-o\right)=y^{n-1}+H^T O^{-1}\left(H x^{n-1}-o\right)
+\label{eq:9}\\
+&amp;\nabla_y J^n=B \nabla_x J^n \label{eq:10}
+\end{eqnarray}
+\]</span></p>
+<p>其中搜索步长为：</p>
+<p><span class="math display">\[
+\begin{equation} \label{eq:11}
+\begin{aligned}
+&amp;\operatorname{Dir} \cdot x^n=\nabla_y J^n+\beta \operatorname{Dir}
+\cdot x^{n-1} \\
+&amp;\operatorname{Dir} \cdot y^n=\nabla_x J^n+\beta \operatorname{Dir}
+\cdot y^{n-1} \\
+\end{aligned}
+\end{equation}
+\]</span></p>
+<p>迭代后的结果为： <span class="math display">\[\begin{equation}
+\label{eq:12}
+\begin{aligned}
+&amp;x^n=x^{n-1}+\alpha \operatorname{Dir} \cdot x^n \\
+&amp;y^n=y^{n-1}+\alpha \operatorname{Dir} \cdot y^n
+\end{aligned}
+\end{equation}
+\]</span> 直到达到最大迭代次数，或梯度足够小为止。</p>
+<h1 id="辐射传输子模式的关系">辐射传输子模式的关系</h1>
+<h2 id="正向模式">正向模式</h2>
+<p>对于给定大气状态参量（state vector）<span
+class="math inline">\(\mathbf{x}\)</span>，辐射向量 <span
+class="math inline">\(\mathbf{y}\)</span> 的计算公式为：</p>
+<p><span class="math display">\[
+\begin{equation}
+\mathbf{y} = H (\mathbf{x}) \label{eq:13}
+\end{equation}
+\]</span></p>
+<p>其中，<span class="math inline">\(H\)</span>
+为辐射传输模式（观测算子，即正向模式）。Jacobian 矩阵 <span
+class="math inline">\(\mathbf{H}\)</span> 给出了假设在大气状态 <span
+class="math inline">\(\mathbf{x_0}\)</span>
+处的线性关系条件下，辐射随状态参量增量（<span
+class="math inline">\(\mathbf{\delta x}\)</span>）的变化 <span
+class="math inline">\(\mathbf{\delta y}\)</span>：</p>
+<p><span class="math display">\[\begin{equation}
+\mathbf{\delta y = H(x_0) \delta x} \label{eq:14}
+\end{equation}
+\]</span></p>
+<p><span class="math inline">\(\mathbf{H}\)</span>
+即为偏微分（Jacobian）矩阵，<span class="math inline">\(\partial y_i /
+\partial x_j\)</span> 为通道 <span class="math inline">\(i\)</span>
+在状态参量 <span class="math inline">\(j\)</span> 处的偏导。Jacobian
+矩阵存储了大气顶层（TOA）辐射随<strong>各高度层廓线向量的单位扰动</strong>
+以及 <strong>地表/云参数</strong>
+的变化。显然，对于给定的大气廓线，它能说明每个通道对哪个高度层的温度和可变气体浓度变化最敏感</p>
+<h2 id="k-矩阵">K 矩阵</h2>
+<p>公式 <span class="math inline">\(\ref{eq:14}\)</span> 中，<span
+class="math inline">\(\mathbf{H(x_0)}\)</span> 即为 RTTOV 中的 <strong>K
+矩阵</strong>。<code>rttov_k</code>及其带
+<code>_K</code>后缀的子进程计算了每条廓线对应的 <span
+class="math inline">\(\mathbf{H(x_0)}\)</span> 矩阵。</p>
+<h2 id="切线性tl">切线性（TL）</h2>
+<p>存储完整的 Jacobian 矩阵<span
+class="math inline">\(\mathbf{H}\)</span>不总是必要的，因此，RTTOV
+包可以只输出<strong>切线性（tangent linear，TL）值</strong> <span
+class="math inline">\(\mathbf{\delta y}\)</span>，在初始大气状态 <span
+class="math inline">\(x_0\)</span> 处，给定大气廓线变化 <span
+class="math inline">\(\mathbf{\delta x}\)</span>，对应的各通道 TOA
+辐射变化 <span class="math inline">\(y_n\)</span> ：</p>
+<p><span class="math display">\[
+\begin{equation}\label{eq:15}
+\begin{aligned}
+&amp;\delta y (x_0) &amp;=&amp; \left[ \delta x \frac{\partial
+y_1}{\partial x}, \delta x \frac{\partial y_2}{\partial x}, \delta x
+\frac{\partial y_3}{\partial x}, \cdots, \delta x \frac{\partial
+y_{nchan}}{\partial x} \right] \\
+&amp; &amp; =&amp; \left[ \delta x K_1, \delta x K_2, \delta x K_3,
+\cdots, \delta x K_{nchan} \right]
+\end{aligned}
+\end{equation}
+\]</span></p>
+<h2 id="伴随ad">伴随（AD）</h2>
+<p><strong>切线性</strong>子进程都有 <code>_TL</code>
+后缀。对应的，伴随函数（以<code>_AD</code>结尾）计算了对于给定辐射变化<span
+class="math inline">\(\delta y\)</span>，假定大气状态 <span
+class="math inline">\(\mathbf{x_0}\)</span> 中任意变量（最多 <span
+class="math inline">\(nel\)</span> 个元素）随大气状态参量（T, q,
+臭氧，地表变量等）的变化： <span class="math display">\[
+\begin{equation}
+\begin{aligned}
+\delta x (x_0) &amp;=&amp; \left[ \delta y \frac{\partial x_1}{\partial
+y}, \delta y \frac{\partial x_2}{\partial y}, \delta y \frac{\partial
+x_3}{\partial y}, \cdots, \delta y \frac{\partial x_{nel}}{\partial y}
+\right]
+\end{aligned}
+\end{equation}
+\]</span></p>
+]]></content>
+      <categories>
+        <category>data assimilation</category>
+        <category>satellite</category>
+      </categories>
+      <tags>
+        <tag>RTTOV</tag>
+        <tag>data assimilation</tag>
+        <tag>CRTM</tag>
+        <tag>satellite</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>WRFDA同化框架代码注释</title>
     <url>/2024/01/13/assim/wrfda/interface/</url>
     <content><![CDATA[<h1 id="wrfda同化入口">WRFDA同化入口</h1>
@@ -1685,8 +1685,8 @@ CRTM_Surface_Create, CRTM_Options_Create</p></li>
       </categories>
       <tags>
         <tag>RTTOV</tag>
-        <tag>CRTM</tag>
         <tag>data assimilation</tag>
+        <tag>CRTM</tag>
         <tag>WRFDA</tag>
       </tags>
   </entry>
