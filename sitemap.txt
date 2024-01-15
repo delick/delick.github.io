@@ -12,8 +12,8 @@ http://delick.github.io/tags/RTTOV/
 http://delick.github.io/tags/CRTM/
 http://delick.github.io/tags/satellite/
 http://delick.github.io/tags/data-assimilation/
-http://delick.github.io/tags/GSI/
 http://delick.github.io/tags/WRFDA/
+http://delick.github.io/tags/GSI/
 http://delick.github.io/categories/data-assimilation/
 http://delick.github.io/categories/data-assimilation/satellite/
 http://delick.github.io/categories/data-assimilation/WRFDA/
